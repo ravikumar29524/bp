@@ -1,6 +1,6 @@
 ---
 - name: Kubernetes lab - J2
-  hosts: localhost
+  hosts: all
   gather_facts: no
   vars: 
     - morpheus_endpoint: "{{ lookup('cypher','secret=secret/MORPHEUS_ENDPOINT') }}"

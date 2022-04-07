@@ -1,0 +1,168 @@
+---
+- name: Kubernetes lab - J2
+  hosts: localhost
+  gather_facts: no
+  vars: 
+    - morpheus_endpoint: "{{ lookup('cypher','secret=secret/MORPHEUS_ENDPOINT') }}"
+    - api_key: "{{ lookup('cypher','secret=secret/API_KEY') }}"
+
+  tasks:
+    - name: create integration
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/integrations
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "integration": {
+              "name": "kubernetes-api-test01",
+              "enabled": true,
+              "type": "ansible",
+              "url": "https://github.com/cxteamdemo/bp",
+              "config": {
+                "ansibleDefaultBranch": "master",
+                "ansiblePlaybooks": "kubernetes",
+                "ansibleRoles": "",
+                "ansibleGroupVars": "",
+                "ansibleHostVars": "",
+                "ansibleGalaxyEnabled": true,
+                "ansibleVerbose": true,
+                "ansibleCommandBus": true
+              }
+            }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: integrations
+
+    - name: create ansible tasks - k8s master
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/tasks
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "task": {
+            "name": "k8s-master-api-test01",
+            "taskType": {
+              "code": "ansibleTask"
+            },
+            "taskOptions": {
+              "ansiblePlaybook": "master.yml",
+              "ansibleGitId": "{{ integrations.json.integration.id }}"
+            },
+            "executeTarget": "resource"
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: tasks_master
+
+    - name: create ansible tasks - k8s worker
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/tasks
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "task": {
+            "name": "k8s-worker-api-test01",
+            "taskType": {
+              "code": "ansibleTask"
+            },
+            "taskOptions": {
+              "ansiblePlaybook": "worker.yml",
+              "ansibleGitId": "{{ integrations.json.integration.id }}"
+            },
+            "executeTarget": "resource"
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: tasks_worker
+
+    - name: create workflow - k8s master
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/task-sets
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "taskSet": {
+            "name": "k8s-master-api-test01",
+            "platform": "linux",
+            "type": "provision",
+            "tasks": [
+              {
+                "taskId": "{{ tasks_master.json.task.id }}",
+                "taskPhase": "provision"
+              }
+            ]
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: workflow_master
+    - local_action: 
+        module: lineinfile 
+        line: 'id1: "{{ workflow_master.json.taskSet.id }}"'
+        dest: vars/k8s.yml
+
+    - name: create workflow - k8s worker
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/task-sets
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "taskSet": {
+            "name": "k8s-worker-api-test01",
+            "platform": "linux",
+            "type": "provision",
+            "tasks": [
+              {
+                "taskId": "{{ tasks_worker.json.task.id }}",
+                "taskPhase": "provision"
+              }
+            ]
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: workflow_worker
+    - local_action: 
+        module: lineinfile 
+        line: 'id2: "{{ workflow_worker.json.taskSet.id }}"'
+        dest: vars/k8s.yml
+
+    - name: set script ids
+      set_fact:
+        id1: "{{ workflow_master.json.taskSet.id }}"
+        id2: "{{ workflow_worker.json.taskSet.id }}"
+
+    - debug: var=id1

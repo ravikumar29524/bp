@@ -1,5 +1,5 @@
 ---
-- name: Kubernetes lab - J2
+- name: Kubernetes API lab - J4
   hosts: all
   gather_facts: no
   vars: 
@@ -153,10 +153,205 @@
       ignore_errors: yes
       register: workflow_worker
 
-
-  #  - name: set script ids
-  #    set_fact:
-  #      id1: "{{ workflow_master.json.taskSet.id }}"
-  #      id2: "{{ workflow_worker.json.taskSet.id }}"
-
-  #  - debug: var=id1
+    - name: create blueprint
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/blueprints
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "name": "kubernetes cluster",
+            "type": "morpheus",
+            "tiers": {
+              "k8s-master": {
+                "instances": [
+                  {
+                    "instance": {
+                      "type": "vmware"
+                    },
+                    "environments": {
+                      "Test": {
+                        "groups": {
+                          "Default": {
+                            "clouds": {
+                              "HPE GreenLake VMaaS Cloud-Trial1": {
+                                "instance": {
+                                  "allowExisting": false,
+                                  "type": "vmware",
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1.0"
+                                  },
+                                  "name": "TrialZeroInstance-${sequence}"
+                                },
+                                "group": {
+                                  "id": 1
+                                },
+                                "volumes": [
+                                  {
+                                    "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
+                                    "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
+                                    "storageType": 1,
+                                    "datastoreId": "auto"
+                                  }
+                                ],
+                                "config": {
+                                  "template": 594,
+                                  "createUser": true,
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
+                                },
+                                "networkInterfaces": [
+                                  {
+                                    "primaryInterface": true,
+                                    "network": {
+                                      "id": "network-2",
+                                      "hasPool": true,
+                                      "idName": "Blue-Network",
+                                      "pool": {
+                                        "id": 1,
+                                        "name": "Blue_pool"
+                                      }
+                                    },
+                                    "ipMode": "",
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
+                                  }
+                                ],
+                                "workflow": {
+                                    "taskSetId": "{{ workflow_master.json.taskSet.id }}"
+                                },
+                                "plan": {
+                                  "id": 404,
+                                  "code": "G1-Large"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "tierIndex": 1,
+                "tier": {
+                  "bootOrder": 0,
+                  "lockedFields": [
+                    "bootOrder"
+                  ]
+                },
+                "linkedTiers": [
+                  "k8s-worker"
+                ]
+              },
+              "k8s-worker": {
+                "instances": [
+                  {
+                    "instance": {
+                      "type": "vmware"
+                    },
+                    "environments": {
+                      "Test": {
+                        "groups": {
+                          "Default": {
+                            "clouds": {
+                              "HPE GreenLake VMaaS Cloud-Trial1": {
+                                "instance": {
+                                  "allowExisting": false,
+                                  "type": "vmware",
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1"
+                                  },
+                                  "name": "TrialZeroInstance-${sequence}"
+                                },
+                                "group": {
+                                  "id": 1
+                                },
+                                "volumes": [
+                                  {
+                                    "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
+                                    "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
+                                    "storageType": 1,
+                                    "datastoreId": "auto"
+                                  }
+                                ],
+                                "config": {
+                                  "template": 594,
+                                  "createUser": true,
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
+                                },
+                                "networkInterfaces": [
+                                  {
+                                    "primaryInterface": true,
+                                    "network": {
+                                      "id": "network-2",
+                                      "hasPool": true,
+                                      "idName": "Blue-Network",
+                                      "pool": {
+                                        "id": 1,
+                                        "name": "Blue_pool"
+                                      }
+                                    },
+                                    "ipMode": "",
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
+                                  }
+                                ],
+                                "workflow": {
+                                    "taskSetId": "{{ workflow_worker.json.taskSet.id }}"
+                                },
+                                "plan": {
+                                  "id": 404,
+                                  "code": "G1-Large"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "tierIndex": 2,
+                "tier": {
+                  "bootOrder": 1,
+                  "lockedFields": [
+                    "bootOrder"
+                  ]
+                },
+                "linkedTiers": [
+                  "k8s-master"
+                ]
+              }
+            },
+            "description": "test",
+            "category": "web",
+            "templateImage": ""
+          }
+        body_format: json
+      ignore_errors: yes

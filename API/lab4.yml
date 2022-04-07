@@ -123,10 +123,7 @@
         body_format: json
       ignore_errors: yes
       register: workflow_master
-    - local_action: 
-        module: lineinfile 
-        line: 'id1: "{{ workflow_master.json.taskSet.id }}"'
-        dest: vars/k8s.yml
+
 
     - name: create workflow - k8s worker
       uri:
@@ -155,14 +152,11 @@
         body_format: json
       ignore_errors: yes
       register: workflow_worker
-    - local_action: 
-        module: lineinfile 
-        line: 'id2: "{{ workflow_worker.json.taskSet.id }}"'
-        dest: vars/k8s.yml
 
-    - name: set script ids
-      set_fact:
-        id1: "{{ workflow_master.json.taskSet.id }}"
-        id2: "{{ workflow_worker.json.taskSet.id }}"
 
-    - debug: var=id1
+  #  - name: set script ids
+  #    set_fact:
+  #      id1: "{{ workflow_master.json.taskSet.id }}"
+  #      id2: "{{ workflow_worker.json.taskSet.id }}"
+
+  #  - debug: var=id1

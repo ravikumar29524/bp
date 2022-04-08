@@ -24,7 +24,7 @@
               "name": "{{ user }}-kubernetes-api",
               "enabled": true,
               "type": "ansible",
-              "url": "https://github.com/cxteamdemo/bp",
+              "url": "https://github.com/cxteamtrials/bp",
               "config": {
                 "ansibleDefaultBranch": "master",
                 "ansiblePlaybooks": "kubernetes",

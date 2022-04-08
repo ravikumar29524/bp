@@ -3,9 +3,12 @@
   hosts: all
   gather_facts: no
   vars: 
-    - morpheus_endpoint: ""
-    - api_key: ""
-    - user: ""
+    - morpheus_endpoint: v7fhrtftc64evbadxxar4nl55m.privatecloud.greenlake.hpe.com
+    - api_key: df0b71e2-cdba-4e21-acb3-b15bf21af331
+    - group: Default
+    - clouds: HPE GreenLake VMaaS Cloud-Trial4
+    - user: emam
+    #- user: "{{ lookup('env','API_USER') }}"
 
   tasks:
     - name: create integration
@@ -166,21 +169,26 @@
           Authorization: "Bearer {{ api_key }}"
         body: |
           {
-            "name": "{{ user }}-kubernetes cluster",
+            "name": "{{ user }}-kubernetes-cluster-api",
             "type": "morpheus",
             "tiers": {
               "k8s-master": {
                 "instances": [
                   {
                     "instance": {
-                      "type": "vmware"
-                    },
+                      "layout": {
+                          "provisionTypeCode": "vmware",
+                          "code": "vmware-1.0-single",
+                          "instanceVersion": "1.0",
+                          "name": "Vmware VM",
+                          "id": 569
+                        },
                     "environments": {
                       "Test": {
                         "groups": {
-                          "Default": {
+                          "{{ group }}": {
                             "clouds": {
-                              "HPE GreenLake VMaaS Cloud-Trial1": {
+                              "{{ clouds }}": {
                                 "instance": {
                                   "allowExisting": false,
                                   "type": "vmware",
@@ -191,54 +199,67 @@
                                     "name": "Vmware VM",
                                     "instanceVersion": "1.0"
                                   },
-                                  "name": "TrialZeroInstance-${sequence}"
-                                },
-                                "group": {
-                                  "id": 1
+                                  "environmentPrefix": "KUBE",
+                                  "name": "${username}-${groupName}-${sequence+10}",
+                                  "allowExisting": false,
+                                  "type": "vmware",
+                                  "userGroup": {
+                                  "id": ""
+                                  }
                                 },
                                 "volumes": [
                                   {
-                                    "name": "root",
-                                    "controllerMountPoint": "132:0:6:0",
-                                    "rootVolume": true,
-                                    "maxIOPS": null,
+                                    "volumeCustomizable": true,
+                                    "vId": 601,
+                                    "controllerMountPoint": "636:0:6:0",
+                                    "readonlyName": false,
                                     "size": 40,
-                                    "vId": 574,
+                                    "maxIOPS": null,
+                                    "name": "root",
+                                    "rootVolume": true,
                                     "storageType": 1,
-                                    "datastoreId": "auto"
+                                    "minStorage": 4294967296,
+                                    "datastoreId": "auto",
+                                    "maxStorage": 42949672960
                                   }
                                 ],
+                                "scale": {
+                                  "typeId": 1,
+                                  "instanceThresholdId": ""
+                                },
                                 "config": {
-                                  "template": 594,
+                                  "template": 601,
+                                  "resourcePoolId": 2,
                                   "createUser": true,
-                                  "noAgent": false,
-                                  "resourcePoolId": 2
+                                  "vmwareFolderId": "group-v41",
+                                  "expose": 8080,
+                                  "noAgent": false
                                 },
                                 "networkInterfaces": [
                                   {
-                                    "primaryInterface": true,
-                                    "network": {
-                                      "id": "network-2",
-                                      "hasPool": true,
-                                      "idName": "Blue-Network",
-                                      "pool": {
-                                        "id": 1,
-                                        "name": "Blue_pool"
-                                      }
-                                    },
                                     "ipMode": "",
-                                    "networkInterfaceTypeId": 4,
-                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "primaryInterface": true,
                                     "showNetworkPoolLabel": true,
-                                    "showNetworkDhcpLabel": false
+                                    "showNetworkDhcpLabel": false,
+                                    "network": {
+                                      "idName": "App-net",
+                                      "pool": {
+                                        "name": "Blue-Pool",
+                                        "id": 1
+                                      },
+                                      "id": "network-2",
+                                      "hasPool": true
+                                    },
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3"
                                   }
                                 ],
                                 "workflow": {
                                     "taskSetId": "{{ workflow_master.json.taskSet.id }}"
                                 },
                                 "plan": {
-                                  "id": 404,
-                                  "code": "G1-Large"
+                                  "code": "G1-Medium",
+                                  "id": 403
                                 }
                               }
                             }
@@ -268,34 +289,39 @@
                     "environments": {
                       "Test": {
                         "groups": {
-                          "Default": {
+                          "{{ group }}": {
                             "clouds": {
-                              "HPE GreenLake VMaaS Cloud-Trial1": {
+                              "{{ clouds }}": {
                                 "instance": {
                                   "allowExisting": false,
                                   "type": "vmware",
                                   "layout": {
-                                    "code": "vmware-1.0-single",
-                                    "id": 569,
-                                    "provisionTypeCode": "vmware",
-                                    "name": "Vmware VM",
-                                    "instanceVersion": "1"
-                                  },
-                                  "name": "TrialZeroInstance-${sequence}"
+                                    "layout": {
+                                      "provisionTypeCode": "vmware",
+                                      "code": "vmware-1.0-single",
+                                      "instanceVersion": "1.0",
+                                      "name": "Vmware VM",
+                                      "id": 569
+                                    },
+                                  "name": "${username}-${groupName}-${sequence+10}"
                                 },
                                 "group": {
                                   "id": 1
                                 },
                                 "volumes": [
                                   {
-                                    "name": "root",
-                                    "controllerMountPoint": "132:0:6:0",
-                                    "rootVolume": true,
-                                    "maxIOPS": null,
+                                    "volumeCustomizable": true,
+                                    "vId": 601,
+                                    "controllerMountPoint": "636:0:6:0",
+                                    "readonlyName": false,
                                     "size": 40,
-                                    "vId": 574,
+                                    "maxIOPS": null,
+                                    "name": "root",
+                                    "rootVolume": true,
                                     "storageType": 1,
-                                    "datastoreId": "auto"
+                                    "minStorage": 4294967296,
+                                    "datastoreId": "auto",
+                                    "maxStorage": 42949672960
                                   }
                                 ],
                                 "config": {
@@ -306,29 +332,33 @@
                                 },
                                 "networkInterfaces": [
                                   {
-                                    "primaryInterface": true,
-                                    "network": {
-                                      "id": "network-2",
-                                      "hasPool": true,
-                                      "idName": "Blue-Network",
-                                      "pool": {
-                                        "id": 1,
-                                        "name": "Blue_pool"
-                                      }
-                                    },
                                     "ipMode": "",
-                                    "networkInterfaceTypeId": 4,
-                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "primaryInterface": true,
                                     "showNetworkPoolLabel": true,
-                                    "showNetworkDhcpLabel": false
+                                    "showNetworkDhcpLabel": false,
+                                    "network": {
+                                      "idName": "App-net",
+                                      "pool": {
+                                        "name": "Blue-Pool",
+                                        "id": 1
+                                      },
+                                      "id": "network-2",
+                                      "hasPool": true
+                                    },
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3"
                                   }
                                 ],
+                                "scale": {
+                                  "typeId": 1,
+                                  "instanceThresholdId": 1
+                                },
                                 "workflow": {
                                     "taskSetId": "{{ workflow_worker.json.taskSet.id }}"
                                 },
                                 "plan": {
-                                  "id": 404,
-                                  "code": "G1-Large"
+                                  "id": 403
+                                  "code": "G1-Medium"
                                 }
                               }
                             }

@@ -3,9 +3,9 @@
   hosts: all
   gather_facts: no
   vars: 
-    - morpheus_endpoint: "{{ lookup('cypher','secret=secret/MORPHEUS_ENDPOINT') }}"
-    - api_key: "{{ lookup('cypher','secret=secret/API_KEY') }}"
-    - user: "{{ lookup('env','API_USER') }}"
+    - morpheus_endpoint: ""
+    - api_key: ""
+    - user: ""
 
   tasks:
     - name: create integration

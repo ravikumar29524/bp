@@ -176,28 +176,22 @@
                 "instances": [
                   {
                     "instance": {
-                      "layout": {
-                          "provisionTypeCode": "vmware",
-                          "code": "vmware-1.0-single",
-                          "instanceVersion": "1.0",
-                          "name": "Vmware VM",
-                          "id": 569
-                        },
+                      "name": "${username}-${groupName}-${sequence+10}",
+                      "type": "vmware"
+                    },
                     "environments": {
-                      "Test": {
+                      "Dev": {
                         "groups": {
                           "{{ group }}": {
                             "clouds": {
                               "{{ clouds }}": {
                                 "instance": {
-                                  "allowExisting": false,
-                                  "type": "vmware",
                                   "layout": {
-                                    "code": "vmware-1.0-single",
-                                    "id": 569,
                                     "provisionTypeCode": "vmware",
+                                    "code": "vmware-1.0-single",
+                                    "instanceVersion": "1.0",
                                     "name": "Vmware VM",
-                                    "instanceVersion": "1.0"
+                                    "id": 569
                                   },
                                   "environmentPrefix": "KUBE",
                                   "name": "${username}-${groupName}-${sequence+10}",
@@ -287,26 +281,25 @@
                       "type": "vmware"
                     },
                     "environments": {
-                      "Test": {
+                      "Dev": {
                         "groups": {
                           "{{ group }}": {
                             "clouds": {
                               "{{ clouds }}": {
                                 "instance": {
+                                  "layout": {
+                                    "provisionTypeCode": "vmware",
+                                    "code": "vmware-1.0-single",
+                                    "instanceVersion": "1.0",
+                                    "name": "Vmware VM",
+                                    "id": 569
+                                  },
+                                  "name": "${username}-${groupName}-${sequence+10}",
                                   "allowExisting": false,
                                   "type": "vmware",
-                                  "layout": {
-                                    "layout": {
-                                      "provisionTypeCode": "vmware",
-                                      "code": "vmware-1.0-single",
-                                      "instanceVersion": "1.0",
-                                      "name": "Vmware VM",
-                                      "id": 569
-                                    },
-                                  "name": "${username}-${groupName}-${sequence+10}"
-                                },
-                                "group": {
-                                  "id": 1
+                                  "userGroup": {
+                                    "id": ""
+                                  }
                                 },
                                 "volumes": [
                                   {
@@ -325,10 +318,12 @@
                                   }
                                 ],
                                 "config": {
-                                  "template": 594,
+                                  "template": 601,
+                                  "resourcePoolId": 2,
                                   "createUser": true,
-                                  "noAgent": false,
-                                  "resourcePoolId": 2
+                                  "vmwareFolderId": "group-v41",
+                                  "expose": 8080,
+                                  "noAgent": false
                                 },
                                 "networkInterfaces": [
                                   {
@@ -386,3 +381,4 @@
           }
         body_format: json
       ignore_errors: yes
+

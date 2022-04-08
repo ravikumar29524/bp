@@ -7,7 +7,7 @@
     - api_key: ""
     - group: Default
     - clouds: HPE GreenLake VMaaS Cloud-Trial4
-    - user: emam
+    - user: ""
     #- user: "{{ lookup('env','API_USER') }}"
 
   tasks:

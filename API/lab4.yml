@@ -5,6 +5,7 @@
   vars: 
     - morpheus_endpoint: "{{ lookup('cypher','secret=secret/MORPHEUS_ENDPOINT') }}"
     - api_key: "{{ lookup('cypher','secret=secret/API_KEY') }}"
+    - user: "{{ lookup('env','API_USER') }}"
 
   tasks:
     - name: create integration
@@ -20,7 +21,7 @@
         body: |
           {
             "integration": {
-              "name": "kubernetes-api-test01",
+              "name": "{{ user }}-kubernetes-api",
               "enabled": true,
               "type": "ansible",
               "url": "https://github.com/cxteamdemo/bp",
@@ -53,7 +54,7 @@
         body: |
           {
             "task": {
-            "name": "k8s-master-api-test01",
+            "name": "{{ user }}-k8s-master-api",
             "taskType": {
               "code": "ansibleTask"
             },
@@ -81,7 +82,7 @@
         body: |
           {
             "task": {
-            "name": "k8s-worker-api-test01",
+            "name": "{{ user }}-k8s-worker-api",
             "taskType": {
               "code": "ansibleTask"
             },
@@ -109,7 +110,7 @@
         body: |
           {
             "taskSet": {
-            "name": "k8s-master-api-test01",
+            "name": "{{ user }}-k8s-master-api",
             "platform": "linux",
             "type": "provision",
             "tasks": [
@@ -138,7 +139,7 @@
         body: |
           {
             "taskSet": {
-            "name": "k8s-worker-api-test01",
+            "name": "{{ user }}-k8s-worker-api",
             "platform": "linux",
             "type": "provision",
             "tasks": [
@@ -165,7 +166,7 @@
           Authorization: "Bearer {{ api_key }}"
         body: |
           {
-            "name": "kubernetes cluster",
+            "name": "{{ user }}-kubernetes cluster",
             "type": "morpheus",
             "tiers": {
               "k8s-master": {

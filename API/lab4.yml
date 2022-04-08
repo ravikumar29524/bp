@@ -6,9 +6,11 @@
     - morpheus_endpoint: ""
     - api_key: ""
     - group: ""
-    - clouds: HPE GreenLake VMaaS Cloud-Trial4
     - user: ""
+    - clouds: HPE GreenLake VMaaS Cloud-Trial4
+
     #- user: "{{ lookup('env','API_USER') }}"
+    #-e "morpheus_endpoint=v7fhrtftc64evbadxxar4nl55m.privatecloud.greenlake.hpe.com api_key=df0b71e2-cdba-4e21-acb3-b15bf21af331 group=Default user=emam" 
 
   tasks:
     - name: create integration
@@ -169,7 +171,7 @@
           Authorization: "Bearer {{ api_key }}"
         body: |
           {
-            "name": "{{ user }}-kubernetes-cluster-api",
+            "name": "{{ user }}-kubernetes-blueprint-api",
             "type": "morpheus",
             "tiers": {
               "k8s-master": {
@@ -359,3 +361,27 @@
           }
         body_format: json
       ignore_errors: yes
+      register: blueprint_k8s
+      
+    - name: create k8s App from blueprint 
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/apps
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
+            "name": "{{ user }}-K8s-APP-api",
+            "description": "this a k8s cluster created by api call",
+            "group": {
+              "{{ group }}"
+            }
+          }
+        body_format: json
+      ignore_errors: yes
+        

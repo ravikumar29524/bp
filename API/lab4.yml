@@ -5,7 +5,7 @@
   vars: 
     - morpheus_endpoint: ""
     - api_key: ""
-    - group: Default
+    - group: ""
     - clouds: HPE GreenLake VMaaS Cloud-Trial4
     - user: ""
     #- user: "{{ lookup('env','API_USER') }}"

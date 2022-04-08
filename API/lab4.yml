@@ -176,7 +176,6 @@
                 "instances": [
                   {
                     "instance": {
-                      "name": "${username}-${groupName}-${sequence+10}",
                       "type": "vmware"
                     },
                     "environments": {
@@ -186,74 +185,63 @@
                             "clouds": {
                               "{{ clouds }}": {
                                 "instance": {
-                                  "layout": {
-                                    "provisionTypeCode": "vmware",
-                                    "code": "vmware-1.0-single",
-                                    "instanceVersion": "1.0",
-                                    "name": "Vmware VM",
-                                    "id": 569
-                                  },
-                                  "environmentPrefix": "KUBE",
-                                  "name": "${username}-${groupName}-${sequence+10}",
                                   "allowExisting": false,
                                   "type": "vmware",
-                                  "userGroup": {
-                                  "id": ""
-                                  }
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1.0"
+                                  },
+                                  "name": "${username}-master-${sequence+10}"
+                                },
+                                "group": {
+                                  "id": 1
                                 },
                                 "volumes": [
                                   {
-                                    "volumeCustomizable": true,
-                                    "vId": 601,
-                                    "controllerMountPoint": "636:0:6:0",
-                                    "readonlyName": false,
-                                    "size": 40,
-                                    "maxIOPS": null,
                                     "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
                                     "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
                                     "storageType": 1,
-                                    "minStorage": 4294967296,
-                                    "datastoreId": "auto",
-                                    "maxStorage": 42949672960
+                                    "datastoreId": "auto"
                                   }
                                 ],
-                                "scale": {
-                                  "typeId": 1,
-                                  "instanceThresholdId": ""
-                                },
                                 "config": {
-                                  "template": 601,
-                                  "resourcePoolId": 2,
+                                  "template": 594,
                                   "createUser": true,
-                                  "vmwareFolderId": "group-v41",
-                                  "expose": 8080,
-                                  "noAgent": false
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
                                 },
                                 "networkInterfaces": [
                                   {
-                                    "ipMode": "",
                                     "primaryInterface": true,
-                                    "showNetworkPoolLabel": true,
-                                    "showNetworkDhcpLabel": false,
                                     "network": {
+                                      "id": "",
+                                      "hasPool": true,
                                       "idName": "App-net",
                                       "pool": {
-                                        "name": "Blue-Pool",
-                                        "id": 1
-                                      },
-                                      "id": "network-2",
-                                      "hasPool": true
+                                        "id": "",
+                                        "name": "Blue-Pool"
+                                      }
                                     },
+                                    "ipMode": "",
                                     "networkInterfaceTypeId": 4,
-                                    "networkInterfaceTypeIdName": "VMXNET 3"
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
                                   }
                                 ],
                                 "workflow": {
                                     "taskSetId": "{{ workflow_master.json.taskSet.id }}"
                                 },
                                 "plan": {
-                                  "code": "G1-Medium",
-                                  "id": 403
+                                  "id": "",
+                                  "code": "G1-Large"
                                 }
                               }
                             }
@@ -281,79 +269,69 @@
                       "type": "vmware"
                     },
                     "environments": {
-                      "Dev": {
+                      "Test": {
                         "groups": {
                           "{{ group }}": {
                             "clouds": {
                               "{{ clouds }}": {
                                 "instance": {
-                                  "layout": {
-                                    "provisionTypeCode": "vmware",
-                                    "code": "vmware-1.0-single",
-                                    "instanceVersion": "1.0",
-                                    "name": "Vmware VM",
-                                    "id": 569
-                                  },
-                                  "name": "${username}-${groupName}-${sequence+10}",
                                   "allowExisting": false,
                                   "type": "vmware",
-                                  "userGroup": {
-                                    "id": ""
-                                  }
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1"
+                                  },
+                                  "name": "${username}-worker-${sequence+10}"
+                                },
+                                "group": {
+                                  "id": 1
                                 },
                                 "volumes": [
                                   {
-                                    "volumeCustomizable": true,
-                                    "vId": 601,
-                                    "controllerMountPoint": "636:0:6:0",
-                                    "readonlyName": false,
-                                    "size": 40,
-                                    "maxIOPS": null,
                                     "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
                                     "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
                                     "storageType": 1,
-                                    "minStorage": 4294967296,
-                                    "datastoreId": "auto",
-                                    "maxStorage": 42949672960
+                                    "datastoreId": "auto"
                                   }
                                 ],
                                 "config": {
-                                  "template": 601,
-                                  "resourcePoolId": 2,
+                                  "template": 594,
                                   "createUser": true,
-                                  "vmwareFolderId": "group-v41",
-                                  "expose": 8080,
-                                  "noAgent": false
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
                                 },
                                 "networkInterfaces": [
                                   {
-                                    "ipMode": "",
                                     "primaryInterface": true,
-                                    "showNetworkPoolLabel": true,
-                                    "showNetworkDhcpLabel": false,
                                     "network": {
+                                      "id": "",
+                                      "hasPool": true,
                                       "idName": "App-net",
                                       "pool": {
-                                        "name": "Blue-Pool",
-                                        "id": 1
-                                      },
-                                      "id": "network-2",
-                                      "hasPool": true
+                                        "id": "",
+                                        "name": "Blue-Pool"
+                                      }
                                     },
+                                    "ipMode": "",
                                     "networkInterfaceTypeId": 4,
-                                    "networkInterfaceTypeIdName": "VMXNET 3"
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
                                   }
                                 ],
-                                "scale": {
-                                  "typeId": 1,
-                                  "instanceThresholdId": 1
-                                },
                                 "workflow": {
                                     "taskSetId": "{{ workflow_worker.json.taskSet.id }}"
                                 },
                                 "plan": {
-                                  "id": 403
-                                  "code": "G1-Medium"
+                                  "id": "",
+                                  "code": "G1-Large"
                                 }
                               }
                             }
@@ -381,4 +359,3 @@
           }
         body_format: json
       ignore_errors: yes
-

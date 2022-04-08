@@ -3,8 +3,8 @@
   hosts: all
   gather_facts: no
   vars: 
-    - morpheus_endpoint: v7fhrtftc64evbadxxar4nl55m.privatecloud.greenlake.hpe.com
-    - api_key: df0b71e2-cdba-4e21-acb3-b15bf21af331
+    - morpheus_endpoint: ""
+    - api_key: ""
     - group: Default
     - clouds: HPE GreenLake VMaaS Cloud-Trial4
     - user: emam

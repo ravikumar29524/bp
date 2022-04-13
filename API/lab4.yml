@@ -375,8 +375,7 @@
           Authorization: "Bearer {{ api_key }}"
         body: |
           {
-            #"blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
-            "blueprintId": "61",
+            "blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
             "name": "{{ user }}-K8s-APP-api",
             "description": "this a k8s cluster created by api call",
             "environment": "Dev",

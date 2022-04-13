@@ -9,8 +9,6 @@
     - user: ""
     - clouds: HPE GreenLake VMaaS Cloud-Trial4
 
-    #- user: "{{ lookup('env','API_USER') }}"
-    #-e "morpheus_endpoint=v7fhrtftc64evbadxxar4nl55m.privatecloud.greenlake.hpe.com api_key=df0b71e2-cdba-4e21-acb3-b15bf21af331 group=Default user=emam" 
 
   tasks:
     - name: create integration

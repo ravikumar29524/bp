@@ -271,7 +271,7 @@
                       "type": "vmware"
                     },
                     "environments": {
-                      "Test": {
+                      "Dev": {
                         "groups": {
                           "{{ group }}": {
                             "clouds": {
@@ -355,7 +355,7 @@
                 ]
               }
             },
-            "description": "test",
+            "description": "Blueprint created by API",
             "category": "web",
             "templateImage": ""
           }

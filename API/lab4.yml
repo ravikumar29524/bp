@@ -378,6 +378,7 @@
             "blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
             "name": "{{ user }}-K8s-APP-api",
             "description": "this a k8s cluster created by api call",
+            "environment": "Dev",
             "group": {
               "{{ group }}"
             }

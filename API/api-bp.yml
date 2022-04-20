@@ -1,0 +1,387 @@
+---
+- name: Kubernetes API lab - J4
+  hosts: all
+  gather_facts: no
+  vars: 
+    - morpheus_endpoint: ""
+    - api_key: ""
+    - group: ""
+    - user: ""
+    - clouds: HPE GreenLake VMaaS Cloud-Trial4
+
+
+  tasks:
+    - name: create integration
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/integrations
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "integration": {
+              "name": "{{ user }}-kubernetes-api",
+              "enabled": true,
+              "type": "ansible",
+              "url": "https://github.com/cxteamtrials/bp",
+              "config": {
+                "ansibleDefaultBranch": "master",
+                "ansiblePlaybooks": "kubernetes",
+                "ansibleRoles": "",
+                "ansibleGroupVars": "",
+                "ansibleHostVars": "",
+                "ansibleGalaxyEnabled": true,
+                "ansibleVerbose": true,
+                "ansibleCommandBus": true
+              }
+            }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: integrations
+
+    - name: create ansible tasks - k8s master
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/tasks
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "task": {
+            "name": "{{ user }}-k8s-master-api",
+            "taskType": {
+              "code": "ansibleTask"
+            },
+            "taskOptions": {
+              "ansiblePlaybook": "master.yml",
+              "ansibleGitId": "{{ integrations.json.integration.id }}"
+            },
+            "executeTarget": "resource"
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: tasks_master
+
+    - name: create ansible tasks - k8s worker
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/tasks
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "task": {
+            "name": "{{ user }}-k8s-worker-api",
+            "taskType": {
+              "code": "ansibleTask"
+            },
+            "taskOptions": {
+              "ansiblePlaybook": "worker.yml",
+              "ansibleGitId": "{{ integrations.json.integration.id }}"
+            },
+            "executeTarget": "resource"
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: tasks_worker
+
+    - name: create workflow - k8s master
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/task-sets
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "taskSet": {
+            "name": "{{ user }}-k8s-master-api",
+            "platform": "linux",
+            "type": "provision",
+            "tasks": [
+              {
+                "taskId": "{{ tasks_master.json.task.id }}",
+                "taskPhase": "provision"
+              }
+            ]
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: workflow_master
+
+
+    - name: create workflow - k8s worker
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/task-sets
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "taskSet": {
+            "name": "{{ user }}-k8s-worker-api",
+            "platform": "linux",
+            "type": "provision",
+            "tasks": [
+              {
+                "taskId": "{{ tasks_worker.json.task.id }}",
+                "taskPhase": "provision"
+              }
+            ]
+          }
+          }
+        body_format: json
+      ignore_errors: yes
+      register: workflow_worker
+
+    - name: create blueprint
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/blueprints
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "name": "{{ user }}-kubernetes-blueprint-api",
+            "type": "morpheus",
+            "tiers": {
+              "k8s-master": {
+                "instances": [
+                  {
+                    "instance": {
+                      "type": "vmware"
+                    },
+                    "environments": {
+                      "Dev": {
+                        "groups": {
+                          "{{ group }}": {
+                            "clouds": {
+                              "{{ clouds }}": {
+                                "instance": {
+                                  "allowExisting": false,
+                                  "type": "vmware",
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1.0"
+                                  },
+                                  "name": "${username}-master-${sequence+10}"
+                                },
+                                "group": {
+                                  "id": 1
+                                },
+                                "volumes": [
+                                  {
+                                    "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
+                                    "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
+                                    "storageType": 1,
+                                    "datastoreId": "auto"
+                                  }
+                                ],
+                                "config": {
+                                  "template": 594,
+                                  "createUser": true,
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
+                                },
+                                "networkInterfaces": [
+                                  {
+                                    "primaryInterface": true,
+                                    "network": {
+                                      "id": "",
+                                      "hasPool": true,
+                                      "idName": "App-net",
+                                      "pool": {
+                                        "id": "",
+                                        "name": "Blue-Pool"
+                                      }
+                                    },
+                                    "ipMode": "",
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
+                                  }
+                                ],
+                                "workflow": {
+                                    "taskSetId": "{{ workflow_master.json.taskSet.id }}"
+                                },
+                                "plan": {
+                                  "id": "",
+                                  "code": "G1-Large"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "tierIndex": 1,
+                "tier": {
+                  "bootOrder": 0,
+                  "lockedFields": [
+                    "bootOrder"
+                  ]
+                },
+                "linkedTiers": [
+                  "k8s-worker"
+                ]
+              },
+              "k8s-worker": {
+                "instances": [
+                  {
+                    "instance": {
+                      "type": "vmware"
+                    },
+                    "environments": {
+                      "Dev": {
+                        "groups": {
+                          "{{ group }}": {
+                            "clouds": {
+                              "{{ clouds }}": {
+                                "instance": {
+                                  "allowExisting": false,
+                                  "type": "vmware",
+                                  "layout": {
+                                    "code": "vmware-1.0-single",
+                                    "id": 569,
+                                    "provisionTypeCode": "vmware",
+                                    "name": "Vmware VM",
+                                    "instanceVersion": "1"
+                                  },
+                                  "name": "${username}-worker-${sequence+10}"
+                                },
+                                "group": {
+                                  "id": 1
+                                },
+                                "volumes": [
+                                  {
+                                    "name": "root",
+                                    "controllerMountPoint": "132:0:6:0",
+                                    "rootVolume": true,
+                                    "maxIOPS": null,
+                                    "size": 40,
+                                    "vId": 574,
+                                    "storageType": 1,
+                                    "datastoreId": "auto"
+                                  }
+                                ],
+                                "config": {
+                                  "template": 594,
+                                  "createUser": true,
+                                  "noAgent": false,
+                                  "resourcePoolId": 2
+                                },
+                                "networkInterfaces": [
+                                  {
+                                    "primaryInterface": true,
+                                    "network": {
+                                      "id": "",
+                                      "hasPool": true,
+                                      "idName": "App-net",
+                                      "pool": {
+                                        "id": "",
+                                        "name": "Blue-Pool"
+                                      }
+                                    },
+                                    "ipMode": "",
+                                    "networkInterfaceTypeId": 4,
+                                    "networkInterfaceTypeIdName": "VMXNET 3",
+                                    "showNetworkPoolLabel": true,
+                                    "showNetworkDhcpLabel": false
+                                  }
+                                ],
+                                "workflow": {
+                                    "taskSetId": "{{ workflow_worker.json.taskSet.id }}"
+                                },
+                                "plan": {
+                                  "id": "",
+                                  "code": "G1-Large"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "tierIndex": 2,
+                "tier": {
+                  "bootOrder": 1,
+                  "lockedFields": [
+                    "bootOrder"
+                  ]
+                },
+                "linkedTiers": [
+                  "k8s-master"
+                ]
+              }
+            },
+            "description": "Blueprint created by API",
+            "category": "web",
+            "templateImage": "ubuntu-20"
+          }
+        body_format: json
+      ignore_errors: yes
+      register: blueprint_k8s
+      
+    - name: create k8s App from blueprint 
+      uri:
+        url: https://{{ morpheus_endpoint }}/api/apps
+        method: POST
+        validate_certs: no
+        return_content: yes
+        force_basic_auth: true
+        timeout: 60
+        headers:
+          Authorization: "Bearer {{ api_key }}"
+        body: |
+          {
+            "blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
+            "name": "{{ user }}-K8s-APP-api",
+            "description": "this a k8s cluster created by api call",
+            "environment": "Dev",
+            "tiers": ""{{ user }}-kubernetes-blueprint-api"
+            "group": {
+              "{{ group }}"
+            }
+          }
+        body_format: json
+      ignore_errors: yes
+        

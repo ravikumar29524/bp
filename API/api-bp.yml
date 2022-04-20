@@ -11,39 +11,6 @@
 
 
   tasks:
-    - name: create integration
-      uri:
-        url: https://{{ morpheus_endpoint }}/api/integrations
-        method: POST
-        validate_certs: no
-        return_content: yes
-        force_basic_auth: true
-        timeout: 60
-        headers:
-          Authorization: "Bearer {{ api_key }}"
-        body: |
-          {
-            "integration": {
-              "name": "{{ user }}-kubernetes-api",
-              "enabled": true,
-              "type": "ansible",
-              "url": "https://github.com/cxteamtrials/bp",
-              "config": {
-                "ansibleDefaultBranch": "master",
-                "ansiblePlaybooks": "kubernetes",
-                "ansibleRoles": "",
-                "ansibleGroupVars": "",
-                "ansibleHostVars": "",
-                "ansibleGalaxyEnabled": true,
-                "ansibleVerbose": true,
-                "ansibleCommandBus": true
-              }
-            }
-          }
-        body_format: json
-      ignore_errors: yes
-      register: integrations
-
     - name: create ansible tasks - k8s master
       uri:
         url: https://{{ morpheus_endpoint }}/api/tasks
@@ -63,7 +30,7 @@
             },
             "taskOptions": {
               "ansiblePlaybook": "master.yml",
-              "ansibleGitId": "{{ integrations.json.integration.id }}"
+              "ansibleGitId": "75"
             },
             "executeTarget": "resource"
           }
@@ -91,7 +58,7 @@
             },
             "taskOptions": {
               "ansiblePlaybook": "worker.yml",
-              "ansibleGitId": "{{ integrations.json.integration.id }}"
+              "ansibleGitId": "75"
             },
             "executeTarget": "resource"
           }
@@ -360,28 +327,3 @@
         body_format: json
       ignore_errors: yes
       register: blueprint_k8s
-      
-    - name: create k8s App from blueprint 
-      uri:
-        url: https://{{ morpheus_endpoint }}/api/apps
-        method: POST
-        validate_certs: no
-        return_content: yes
-        force_basic_auth: true
-        timeout: 60
-        headers:
-          Authorization: "Bearer {{ api_key }}"
-        body: |
-          {
-            "blueprintId": "{{ blueprint_k8s.json.tiers.id }}",
-            "name": "{{ user }}-K8s-APP-api",
-            "description": "this a k8s cluster created by api call",
-            "environment": "Dev",
-            "tiers": ""{{ user }}-kubernetes-blueprint-api"
-            "group": {
-              "{{ group }}"
-            }
-          }
-        body_format: json
-      ignore_errors: yes
-        

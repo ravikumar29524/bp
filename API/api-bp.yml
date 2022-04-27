@@ -7,6 +7,7 @@
     - api_key: ""
     - group: ""
     - user: ""
+    - repoIntgID: "6"
     - clouds: HPE GreenLake VMaaS Cloud-Trial4
 
 
@@ -30,7 +31,7 @@
             },
             "taskOptions": {
               "ansiblePlaybook": "master.yml",
-              "ansibleGitId": "75"
+              "ansibleGitId": "{{ repoIntgID }}"
             },
             "executeTarget": "resource"
           }
@@ -58,7 +59,7 @@
             },
             "taskOptions": {
               "ansiblePlaybook": "worker.yml",
-              "ansibleGitId": "75"
+              "ansibleGitId": "{{ repoIntgID }}"
             },
             "executeTarget": "resource"
           }

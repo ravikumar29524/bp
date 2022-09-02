@@ -12,7 +12,7 @@
  #Install MariaDB server
 - name: Install MariaDB Packages
   apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'mariadb-server', 'python3-pymysql' , 'python3-mysqldb' , 'python-apt']
+  loop: [ 'mariadb-server', 'python3-pymysql' , 'python3-mysqldb' , 'python-apt' ]
 
 # Start MariaDB Service
 - name: Start MariaDB service

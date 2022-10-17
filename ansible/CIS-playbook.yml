@@ -8,8 +8,8 @@
 
 
 
-  vars_files:
-    - .rhel_ec2_cis.yml
+  #vars_files:
+  # - .rhel_ec2_cis.yml
 
 
   tasks:

@@ -3,12 +3,12 @@
 rhel7cis_notauto: false
 
 # Disable/Enable whole sections (Default is for all)
-rhel7cis_section1: true
+rhel7cis_section1: false
 rhel7cis_section2: false
 rhel7cis_section3: false
-rhel7cis_section4: true
+rhel7cis_section4: false
 rhel7cis_section5: false
-rhel7cis_section6: true
+rhel7cis_section6: false
 
 # Disable/Enable OS check
 rhel7cis_os_check: true
@@ -44,7 +44,7 @@ audit_content: git
 audit_cmd_timeout: 30000
 
 # enable audits to run - this  runs the audit and get the latest content
-run_audit: false
+run_audit: true
 
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####

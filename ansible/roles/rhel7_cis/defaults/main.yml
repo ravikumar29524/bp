@@ -44,7 +44,7 @@ audit_content: git
 audit_cmd_timeout: 30000
 
 # enable audits to run - this  runs the audit and get the latest content
-run_audit: true
+run_audit: false
 
 ### End Goss enablements ####
 #### Detailed settings found at the end of this document ####

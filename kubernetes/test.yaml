@@ -99,17 +99,18 @@
         - kubectl=1.25.0-00
 
     - name: create the cluster
-      shell: kubeadm init --ignore-preflight-errors=All
+      shell:  kubeadm init --apiserver-advertise-address {{ ansible_eth0.ipv4.address }} --pod-network-cidr 10.244.0.0/16 --ignore-preflight-errors=all --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}"
+ --ignore-preflight-errors=All
       register: cluster_output
 
+    - name: To start using your cluster, you need to run the following as a regular user
+      shell: |
+        mkdir -p $HOME/.kube
+        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+        chown $(id -u):$(id -g) $HOME/.kube/config
+        
     - name: create the flannel network between the cluster nodes
       shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
     - name: create the flannel RBAC network between the cluster nodes
       shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-
-    - name: test 2
-      shell: |
-        mkdir -p $HOME/.kube
-        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-        chown $(id -u):$(id -g) $HOME/.kube/config

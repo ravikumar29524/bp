@@ -111,5 +111,5 @@
     - name: create the flannel network between the cluster nodes
       shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-    - name: create the flannel RBAC network between the cluster nodes
-      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+#    - name: create the flannel RBAC network between the cluster nodes
+#      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml

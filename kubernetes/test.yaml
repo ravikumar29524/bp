@@ -94,14 +94,9 @@
     - name: Installing apt packages
       apt: pkg={{ item }}
       with_items:
-        - kubelet=1.23.0-00
-        - kubeadm=1.23.0-00
-        - kubectl=1.23.0-00
-
-    - name: Prevent kube from being upgraded
-      dpkg_selections:
-        name: [ 'kubelet','kubeadm','kubectl' ]
-        selection: hold
+        - kubelet=1.25.0-00
+        - kubeadm=1.25.0-00
+        - kubectl=1.25.0-00
 
     - name: create the cluster
       shell: kubeadm init --ignore-preflight-errors=All

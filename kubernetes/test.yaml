@@ -99,8 +99,8 @@
         - kubectl=1.25.0-00
 
     - name: create the cluster
-      shell:  kubeadm init --apiserver-advertise-address {{ ansible_eth0.ipv4.address }} --pod-network-cidr 10.244.0.0/16 --ignore-preflight-errors=all --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}"
- --ignore-preflight-errors=All
+      shell:  kubeadm init --apiserver-advertise-address {{ ansible_eth0.ipv4.address }} --pod-network-cidr 10.244.0.0/16  --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}"  --ignore-preflight-errors=All 
+
       register: cluster_output
 
     - name: To start using your cluster, you need to run the following as a regular user

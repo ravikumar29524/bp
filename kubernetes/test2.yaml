@@ -102,8 +102,8 @@
       debug:
         msg: "{{ lookup('env','KUBE_IP') }}"
         
-    - name: Printing the environment KUBE IP variable in Ansible
-      debug:
+   - name: Printing the environment KUBE variable in Ansible
+     debug:
         msg: "{{ lookup('ansible.builtin.env', 'KUBE_IP') }} is the IP of KUBE Master."
         
         "{{ lookup('ansible.builtin.env', 'USR', default=undef()) }} is the user."

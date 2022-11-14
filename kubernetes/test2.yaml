@@ -100,7 +100,7 @@
         
     - name: Printing the environment KUBE_IP variable in Ansible
       debug:
-        msg: "{{ lookup('env','KUBE_IP') }}"  {{ ansible_facts.eth0.ipv4.address }}
+        msg: "{{ lookup('env','KUBE_IP') }}"
 
     - name: Printing ansible facts variable in Ansible
       debug:

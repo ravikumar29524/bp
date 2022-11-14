@@ -98,9 +98,6 @@
         - kubeadm=1.25.0-00
         - kubectl=1.25.0-00
         
-    - name: Printing the environment KUBE_IP variable in Ansible
-      debug:
-        msg: "{{ lookup('env','KUBE_IP') }}"
         
     - name: Printing the environment KUBE_IP variable in Ansible
       debug:

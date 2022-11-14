@@ -106,7 +106,11 @@
     - name: Printing ansible facts variable in Ansible
       debug:
         msg: "{{ ansible_facts.eth0.ipv4.address }}"
-
-    - name: Join the worker node to the kubernetes cluster
-      command:  kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
+    - name: test 2
+      shell: |
+      
+       kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
+       
+  #  - name: Join the worker node to the kubernetes cluster
+  #   command:  kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
      

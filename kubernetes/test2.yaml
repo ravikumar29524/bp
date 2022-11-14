@@ -93,17 +93,9 @@
       apt: 
         pkg: ['kubelet=1.25.0-00', 'kubeadm=1.25.0-00', 'kubectl=1.25.0-00']
        
-    - name: Printing the environment KUBE_IP variable in Ansible
-      debug:
-        msg: "{{ lookup('ansible.builtin.env', 'KUBE_IP') }} is the IP of KUBE Master."
 
-    - name: Printing ansible facts variable in Ansible
-      debug:
-        msg: "{{ ansible_facts.eth0.ipv4.address }}"
-    - name: test 2
+    - name: Join the Master control node 
       shell: |
             kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
        
-  #  - name: Join the worker node to the kubernetes cluster
-  #   command:  kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
-     
+ 

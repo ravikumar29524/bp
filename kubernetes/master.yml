@@ -1,3 +1,3 @@
 - hosts: all
   tasks:
-    - include: create-master.yml
+    - include: test.yaml

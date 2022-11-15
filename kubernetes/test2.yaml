@@ -1,8 +1,4 @@
----
-- name: Prepare a Kubernetes cluster worker node
-  hosts: all
-  become: yes
-  tasks:
+
     - name: test 1
       shell: |
         sudo apt update

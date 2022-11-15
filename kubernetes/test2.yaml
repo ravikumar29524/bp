@@ -89,13 +89,18 @@
         force_apt_get: yes
         cache_valid_time: 3600
 
-    - name: Installing apt packages
-      apt: 
-        pkg: ['kubelet=1.25.0-00', 'kubeadm=1.25.0-00', 'kubectl=1.25.0-00']
+#    - name: Installing apt packages
+#     apt: 
+#       pkg: ['kubelet=1.25.0-00', 'kubeadm=1.25.0-00', 'kubectl=1.25.0-00']
        
 
-    - name: Join the Master control node 
-      shell: |
-         kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
+ #   - name: Join the Master control node 
+ #    shell: |
+ #       kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
        
- 
+
+    - name: test2
+      shell: |
+         sudo apt-get install -y kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00
+         sudo apt-mark hold kubelet kubeadm kubectl
+         kubeadm join {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification 

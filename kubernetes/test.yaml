@@ -1,8 +1,3 @@
----
-- name: Prepare a Kubernetes cluster node
-  hosts: all
-  become: yes
-  tasks:
 
     - name: Creating a module container file with content
       copy:

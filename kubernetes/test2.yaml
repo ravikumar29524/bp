@@ -15,7 +15,6 @@
      sudo mkdir -p /etc/yum.repos.d
      sudo touch /etc/yum.repos.d/kubernetes.repo
 
-
 - name: Add k8s repository
   apt_repository:
      repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
@@ -23,11 +22,9 @@
      filename: kubernetes
      update_cache: yes
 
-
-
-- name: test 2
+- name: test 2 for oin the node
   shell: |
-     sudo apt-get update
+     sudo apt update
      sudo apt-get install -y docker-ce=5:20.10.7~3-0~ubuntu-$(lsb_release -cs) kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00
      swapoff -a
      kubeadm join {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification

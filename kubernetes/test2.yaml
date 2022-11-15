@@ -41,7 +41,7 @@
 
     - name: Ansible apt install containerd
       apt:
-        name: containerd
+        name: docker.io
         state: present
 
     - name: a command to configure containerd

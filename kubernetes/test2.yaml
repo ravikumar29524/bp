@@ -96,6 +96,6 @@
 
     - name: Join the Master control node 
       shell: |
-        kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
+         kubeadm join  {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
        
  

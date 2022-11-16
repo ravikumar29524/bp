@@ -1,6 +1,6 @@
    
-   - name: Creating a module container file with content
-     shell: |
+    - name: Creating a module container file with content
+      shell: |
         sudo echo overlay  > /etc/modules-load.d/containerd.conf
         sudo echo br_netfilter >> /etc/modules-load.d/containerd.conf
         

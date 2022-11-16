@@ -1,11 +1,9 @@
-
-    - name: Creating a module container file with content
-      copy:
-        dest: "/etc/modules-load.d/containerd.conf"
-        content: |
-          overlay
-          br_netfilter
-
+   
+   - name: Creating a module container file with content
+      shell: |
+        sudo echo overlay  > /etc/modules-load.d/containerd.conf
+        sudo echo br_netfilter >> /etc/modules-load.d/containerd.conf
+        
     - name: adding overlay modules
       modprobe:
         name: overlay

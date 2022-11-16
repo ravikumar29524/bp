@@ -1,11 +1,11 @@
-   
+
     - name: Creating a module container file with content
       copy:
-         dest: "/etc/modules-load.d/containerd.conf"
-         content: |
-           overlay
-           br_netfilter
-          
+        dest: "/etc/modules-load.d/containerd.conf"
+        content: |
+          overlay
+          br_netfilter
+
     - name: adding overlay modules
       modprobe:
         name: overlay
@@ -32,6 +32,7 @@
         update_cache: yes
         force_apt_get: yes
         cache_valid_time: 3600
+
 
     - name: Ansible apt install containerd
       apt:
@@ -84,9 +85,13 @@
         update_cache: yes
         force_apt_get: yes
         cache_valid_time: 3600
-        
+
     - name: Installing apt packages
-      shell: sudo apt-get install -y kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00
+      apt: pkg={{ item }}
+      with_items:
+        - kubelet=1.25.0-00
+        - kubeadm=1.25.0-00
+        - kubectl=1.25.0-00
 
     - name: create the cluster
       shell:  kubeadm init --apiserver-advertise-address {{ ansible_eth0.ipv4.address }} --pod-network-cidr 10.244.0.0/16  --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}"  --ignore-preflight-errors=All 

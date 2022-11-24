@@ -28,7 +28,6 @@
         executable: pip
         state: present
       with_items:
-        - PyMySQL
         - MySQL-python
 
   #Apache Configuration

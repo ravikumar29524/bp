@@ -18,7 +18,8 @@
         update-cache: yes
         state: latest
       with_items:
-        - python-setuptools
+        - python
+        - python-dev
         - python3-pip
     
     - name: Install pymysql

@@ -53,11 +53,13 @@
       when: disable_default
       notify: Reload Apache
 
-   - name: Make sure pymysql is present
-     become: true # needed if the other tasks are not played as root
-     pip:
-       name: pymysql
-       state: present
+    - name: Install pymysql
+      pip:
+        name: "{{ item }}"
+        executable: pip
+        state: present
+      with_items:
+        - pymysql
 
 
   # MySQL Configuration

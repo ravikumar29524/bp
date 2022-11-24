@@ -19,9 +19,9 @@
         state: latest
       with_items:
         - python-setuptools
-        - python
-        - python-dev
-        - python3-pip
+       # - python
+       # - python-dev
+       # - python3-pip
     
 
 
@@ -29,7 +29,7 @@
   #Apache Configuration
     - name: Install mysql LAMP Packages
       apt: name={{ item }} update_cache=yes state=latest
-      loop: [ 'apache2', 'mysql-server','python3-mysqldb', 'python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
+      loop: [ 'apache2', 'mysql-server', 'php', 'php-mysql', 'libapache2-mod-php' ]
 
     - name: Create document root
       file:
@@ -52,6 +52,13 @@
       shell: /usr/sbin/a2dissite 000-default.conf
       when: disable_default
       notify: Reload Apache
+
+   - name: Make sure pymysql is present
+      become: true # needed if the other tasks are not played as root
+      pip:
+        name: pymysql
+        state: present
+
 
   # MySQL Configuration
     - name: Sets the root password

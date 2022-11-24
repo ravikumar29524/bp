@@ -19,6 +19,7 @@
         state: latest
       with_items:
         - python-setuptools
+        - python3-pip
     
     - name: Install pymysql
       pip:

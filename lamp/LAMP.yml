@@ -60,6 +60,7 @@
         state: present
       with_items:
         - pymysql
+        - mysql-connector
 
 
   # MySQL Configuration

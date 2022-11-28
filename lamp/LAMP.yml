@@ -24,8 +24,6 @@
         - python3-pip
     
 
-
-
   #Apache Configuration
     - name: Install mysql LAMP Packages
       apt: name={{ item }} update_cache=yes state=latest
@@ -52,16 +50,6 @@
       shell: /usr/sbin/a2dissite 000-default.conf
       when: disable_default
       notify: Reload Apache
-
-    - name: Install pymysql
-      pip:
-        name: "{{ item }}"
-        executable: pip3
-        state: present
-      with_items:
-        - pymysql
-        - mysql-connector
-
 
 
 

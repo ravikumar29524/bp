@@ -11,11 +11,23 @@
     - name: Install prerequisites
       apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
       loop: [ 'aptitude' ]
+    
+    - name: Install python
+      apt:
+        pkg: "{{ item }}"
+        update-cache: yes
+        state: latest
+      with_items:
+       #- python-setuptools
+       # - python
+       # - python-dev
+        - python3-pip
+    
 
   #Apache Configuration
-    - name: Install LAMP Packages
+    - name: Install mysql LAMP Packages
       apt: name={{ item }} update_cache=yes state=latest
-      loop: [ 'apache2', 'mysql-server','php', 'php-mysql', 'libapache2-mod-php' ]
+      loop: [ 'apache2', 'mysql-server','python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
 
     - name: Create document root
       file:
@@ -39,27 +51,7 @@
       when: disable_default
       notify: Reload Apache
 
-  # MySQL Configuration
-    - name: Sets the root password
-      mysql_user:
-        name: root
-        password: "{{ mysql_root_password }}"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
 
-    - name: Removes all anonymous user accounts
-      mysql_user:
-        name: ''
-        host_all: yes
-        state: absent
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
-
-    - name: Removes the MySQL test database
-      mysql_db:
-        name: test
-        state: absent
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
 
   # UFW Configuration
     - name: "UFW - Allow HTTP on port {{ http_port }}"

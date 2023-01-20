@@ -88,5 +88,5 @@
       shell: |
         sudo apt-get install -y kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00
         sudo swapoff -a
-        sudo kubeadm join {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification
+        sudo kubeadm join {{ ansible_env.KUBE_IP }}:6443 --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}" --discovery-token-unsafe-skip-ca-verification --ignore-preflight-errors=All
 

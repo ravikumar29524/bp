@@ -91,33 +91,32 @@
         force_apt_get: yes
         cache_valid_time: 3600
 
-    - name: Check for kublet version
-      command: apt-cache policy kubelet
-      register: kubelet_version
-
-    - debug:
-        msg: "Debug Kubelet installation: {{ kubelet_version }}"
-
-    - name: Check for kubeadm version
-      command: apt-cache policy kubeadm
-      register: kubeadm_version
-
-    - debug:
-        msg: "Debug Kubeadm installation: {{ kubeadm_version }}"
-        
-    - name: Check for kubectl version
-      command: apt-cache policy kubectl
-      register: kubectl_version
-
-    - debug:
-        msg: "Debug Kubectl installation: {{ kubectl_version }}"
-
     - name: Installing apt packages
       apt: pkg={{ item }}
       with_items:
         - kubelet=1.25.0-00
         - kubeadm=1.25.0-00
-        - kubectl=1.25.0-00
+        # - kubectl=1.25.0-00
+
+    - name: Check for kubectl version
+      command: apt-cache policy kubectl
+      register: kubectl1_version
+
+    - debug:
+        msg: "Point 1 | Debug Kubectl installation: {{ kubectl1_version }}"
+
+    - name: Installing kubectl packages
+      apt:
+        name: kubectl=1.25.0-00
+        state: present
+        allow_downgrade: yes
+
+    - name: Check for kubectl version
+      command: apt-cache policy kubectl
+      register: kubectl2_version
+
+    - debug:
+        msg: "Point 2 | Debug Kubectl installation: {{ kubectl2_version }}"
 
     - name: create the cluster
       shell:  kubeadm init --apiserver-advertise-address {{ ansible_eth0.ipv4.address }} --pod-network-cidr 10.244.0.0/16  --token "{{ lookup('cypher','secret=secret/K8S_TOKEN') }}"  --ignore-preflight-errors=All 

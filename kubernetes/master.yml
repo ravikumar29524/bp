@@ -98,6 +98,20 @@
     - debug:
         msg: "Debug Kubelet installation: {{ kubelet_version }}"
 
+    - name: Check for kubeadm version
+      command: apt-cache policy kubeadm
+      register: kubeadm_version
+
+    - debug:
+        msg: "Debug Kubeadm installation: {{ kubeadm_version }}"
+        
+    - name: Check for kubectl version
+      command: apt-cache policy kubectl
+      register: kubectl_version
+
+    - debug:
+        msg: "Debug Kubectl installation: {{ kubectl_version }}"
+
     - name: Installing apt packages
       apt: pkg={{ item }}
       with_items:

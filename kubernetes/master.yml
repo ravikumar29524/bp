@@ -91,8 +91,12 @@
         force_apt_get: yes
         cache_valid_time: 3600
 
+    - name: Check for kublet version
+      command: apt-cache policy kubelet
+      register: kubelet_version
+
     - debug:
-        msg: "Debug Kubelet installation"
+        msg: "Debug Kubelet installation: {{ kubelet_version }}"
 
     - name: Installing apt packages
       apt: pkg={{ item }}

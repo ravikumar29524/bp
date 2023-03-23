@@ -109,7 +109,7 @@
       apt:
         name: kubectl=1.25.0-00
         state: present
-        allow_downgrade: yes
+        force: yes
 
     - name: Check for kubectl version
       command: apt-cache policy kubectl
